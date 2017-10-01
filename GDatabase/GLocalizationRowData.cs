@@ -6,7 +6,7 @@ using UnityEngine;
 
 using GDataDB;
 
-namespace DTLocalization {
+namespace DTLocalization.Internal {
 	[Serializable]
 	public class GLocalizationRowData {
 		public string Key {

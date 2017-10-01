@@ -8,7 +8,7 @@ using UnityEngine;
 using DTLocalization.Internal;
 using GDataDB;
 
-namespace DTLocalization {
+namespace DTLocalization.Internal {
 	[Serializable]
 	public class LocalizationTable : ISerializationCallbackReceiver {
 		// PRAGMA MARK - Public Interface
