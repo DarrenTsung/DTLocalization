@@ -20,16 +20,5 @@ namespace DTLocalization {
 		[Header("Outlets")]
 		[SerializeField]
 		private GDataLocalizationTableSource[] gdataTableSources_;
-
-		private void Awake() {
-			foreach (var tableSource in TableSources) {
-				var localizationTable = tableSource.LoadTable();
-				if (localizationTable == null) {
-					continue;
-				}
-
-				Localization.LoadTable(localizationTable);
-			}
-		}
 	}
 }

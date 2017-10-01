@@ -9,9 +9,10 @@ using DTLocalization.Internal;
 using GDataDB;
 
 namespace DTLocalization {
-	public static class Localization {
+	public static partial class Localization {
 		// PRAGMA MARK - Public Interface
 		public static event Action OnCultureChanged = delegate {};
+		public static event Action OnLocalizationsUpdated = delegate {};
 
 		public static CultureInfo CurrentCulture {
 			get { return currentCulture_; }
@@ -53,15 +54,35 @@ namespace DTLocalization {
 			return localizedText;
 		}
 
-		public static void LoadTable(LocalizationTable localizationTable) {
-			localizationTableMap_.SetAndWarnIfReplacing(localizationTable.TableKey, localizationTable);
-		}
-
 
 		// PRAGMA MARK - Internal
 		private static readonly Dictionary<string, LocalizationTable> localizationTableMap_ = new Dictionary<string, LocalizationTable>();
 		private static readonly Dictionary<string, CultureInfo> cultureMap_ = new Dictionary<string, CultureInfo>();
 
 		private static CultureInfo currentCulture_ = new CultureInfo("EN");
+
+		[RuntimeInitializeOnLoadMethod]
+		private static void InitializeLocalization() {
+			foreach (var localizationTable in LocalizationOfflineCache.LoadAllCached()) {
+				LoadTable(localizationTable);
+			}
+
+			foreach (var localizationConfiguration in UnityEngine.Object.FindObjectsOfType<LocalizationConfiguration>()) {
+				foreach (var tableSource in localizationConfiguration.TableSources) {
+					var localizationTable = tableSource.LoadTable();
+					if (localizationTable == null) {
+						// LoadTable will log reason - we can ignore
+						continue;
+					}
+
+					LoadTable(localizationTable);
+				}
+			}
+		}
+
+		private static void LoadTable(LocalizationTable localizationTable) {
+			localizationTableMap_.SetAndWarnIfReplacing(localizationTable.TableKey, localizationTable);
+			OnLocalizationsUpdated.Invoke();
+		}
 	}
 }
