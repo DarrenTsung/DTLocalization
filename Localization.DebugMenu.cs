@@ -24,6 +24,8 @@ namespace DTLocalization {
 
 		private static void RefreshDebugMenu() {
 			var inspector = DTDebugMenu.GenericInspectorRegistry.Get("Localization");
+			inspector.ResetFields();
+
 			foreach (var kvp in localizationTableMap_) {
 				string tableKey = kvp.Key;
 				LocalizationTable table = kvp.Value;
