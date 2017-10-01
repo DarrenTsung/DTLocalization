@@ -59,12 +59,15 @@ namespace DTLocalization {
 		private static readonly Dictionary<string, LocalizationTable> localizationTableMap_ = new Dictionary<string, LocalizationTable>();
 		private static readonly Dictionary<string, CultureInfo> cultureMap_ = new Dictionary<string, CultureInfo>();
 
+		private static readonly HashSet<string> cachedTableKeys_ = new HashSet<string>();
+
 		private static CultureInfo currentCulture_ = new CultureInfo("EN");
 
 		[RuntimeInitializeOnLoadMethod]
 		private static void InitializeLocalization() {
 			foreach (var localizationTable in LocalizationOfflineCache.LoadAllCached()) {
 				LoadTable(localizationTable);
+				cachedTableKeys_.Add(localizationTable.TableKey);
 			}
 
 			foreach (var localizationConfiguration in UnityEngine.Object.FindObjectsOfType<LocalizationConfiguration>()) {
@@ -81,7 +84,16 @@ namespace DTLocalization {
 		}
 
 		private static void LoadTable(LocalizationTable localizationTable) {
-			localizationTableMap_.SetAndWarnIfReplacing(localizationTable.TableKey, localizationTable);
+			string tableKey = localizationTable.TableKey;
+
+			bool cacheOverridden = cachedTableKeys_.Contains(tableKey);
+			cachedTableKeys_.Remove(tableKey);
+
+			if (localizationTableMap_.ContainsKey(tableKey) && !cacheOverridden) {
+				Debug.LogWarning("LoadTable - overriding non-cached table key: " + tableKey + " table key conflict!");
+			}
+
+			localizationTableMap_[tableKey] = localizationTable;
 			OnLocalizationsUpdated.Invoke();
 		}
 	}
