@@ -49,36 +49,25 @@ namespace DTLocalization {
 			return localizedText;
 		}
 
+		public static void LoadTableSource(GDataLocalizationTableSource tableSource) {
+			var localizationTableData = new Dictionary<CultureInfo, Dictionary<string, string>>();
+
+			var localizationGTable = tableSource.LoadLocalizationTable();
+			foreach (var row in localizationGTable.FindAll()) {
+				GLocalizationRowData rowData = row.Element;
+				CultureInfo culture = cultureMap_.GetOrCreateCached(rowData.LanguageCode, lc => new CultureInfo(lc));
+				localizationTableData.GetAndCreateIfNotFound(culture)[rowData.Key] = rowData.LocalizedText;
+			}
+
+			string tableKey = tableSource.LocalizationTableKey;
+			localizationTableMap_[tableKey] = new LocalizationTable(tableKey, localizationTableData);
+		}
+
 
 		// PRAGMA MARK - Internal
 		private static readonly Dictionary<string, LocalizationTable> localizationTableMap_ = new Dictionary<string, LocalizationTable>();
 		private static readonly Dictionary<string, CultureInfo> cultureMap_ = new Dictionary<string, CultureInfo>();
 
-		private static CultureInfo currentCulture_;
-
-		[RuntimeInitializeOnLoadMethod]
-		private static void Initialize() {
-			ReloadAllLocalizations();
-		}
-
-		private static void ReloadAllLocalizations() {
-			// TODO (darren): only loads this data in the editor
-			#if UNITY_EDITOR
-			var tableSources = AssetDatabaseUtil.AllAssetsOfType<GDataLocalizationTableSource>();
-			foreach (var tableSource in tableSources) {
-				var localizationTableData = new Dictionary<CultureInfo, Dictionary<string, string>>();
-
-				var localizationGTable = tableSource.LoadLocalizationTable();
-				foreach (var row in localizationGTable.FindAll()) {
-					GLocalizationRowData rowData = row.Element;
-					CultureInfo culture = cultureMap_.GetOrCreateCached(rowData.LanguageCode, lc => new CultureInfo(lc));
-					localizationTableData.GetAndCreateIfNotFound(culture)[rowData.Key] = rowData.LocalizedText;
-				}
-
-				string tableKey = tableSource.LocalizationTableKey;
-				localizationTableMap_[tableKey] = new LocalizationTable(tableKey, localizationTableData);
-			}
-			#endif
-		}
+		private static CultureInfo currentCulture_ = new CultureInfo("EN");
 	}
 }
