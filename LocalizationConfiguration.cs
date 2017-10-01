@@ -10,14 +10,25 @@ using GDataDB;
 
 namespace DTLocalization {
 	public class LocalizationConfiguration : MonoBehaviour {
+		// PRAGMA MARK - Public Interface
+		public IEnumerable<ILocalizationTableSource> TableSources {
+			get { return gdataTableSources_.Cast<ILocalizationTableSource>(); }
+		}
+
+
 		// PRAGMA MARK - Internal
 		[Header("Outlets")]
 		[SerializeField]
 		private GDataLocalizationTableSource[] gdataTableSources_;
 
 		private void Awake() {
-			foreach (var tableSource in gdataTableSources_) {
-				Localization.LoadTableSource(tableSource);
+			foreach (var tableSource in TableSources) {
+				var localizationTable = tableSource.LoadTable();
+				if (localizationTable == null) {
+					continue;
+				}
+
+				Localization.LoadTable(localizationTable);
 			}
 		}
 	}

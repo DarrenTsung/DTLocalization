@@ -22,6 +22,10 @@ namespace DTLocalization {
 			OnCultureChanged.Invoke();
 		}
 
+		public static CultureInfo GetCachedCultureFor(string cultureString) {
+			return cultureMap_.GetOrCreateCached(cultureString, s => new CultureInfo(s));
+		}
+
 		public static string Get(string key, string localizationTableKey = null) {
 			IEnumerable<LocalizationTable> localizationTables = localizationTableMap_.Values;
 			if (localizationTableKey != null) {
@@ -49,18 +53,8 @@ namespace DTLocalization {
 			return localizedText;
 		}
 
-		public static void LoadTableSource(GDataLocalizationTableSource tableSource) {
-			var localizationTableData = new Dictionary<CultureInfo, Dictionary<string, string>>();
-
-			var localizationGTable = tableSource.LoadLocalizationTable();
-			foreach (var row in localizationGTable.FindAll()) {
-				GLocalizationRowData rowData = row.Element;
-				CultureInfo culture = cultureMap_.GetOrCreateCached(rowData.LanguageCode, lc => new CultureInfo(lc));
-				localizationTableData.GetAndCreateIfNotFound(culture)[rowData.Key] = rowData.LocalizedText;
-			}
-
-			string tableKey = tableSource.LocalizationTableKey;
-			localizationTableMap_[tableKey] = new LocalizationTable(tableKey, localizationTableData);
+		public static void LoadTable(LocalizationTable localizationTable) {
+			localizationTableMap_.SetAndWarnIfReplacing(localizationTable.TableKey, localizationTable);
 		}
 
 
