@@ -1,0 +1,3 @@
+[submodule "GDataDB"]
+	path = GDataDB
+	url = https://github.com/DarrenTsung/GDataDB.git
