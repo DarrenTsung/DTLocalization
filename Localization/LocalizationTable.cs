@@ -14,6 +14,10 @@ namespace DTLocalization {
 		// PRAGMA MARK - Public Interface
 		public string TableKey { get { return tableKey_; } }
 
+		public Dictionary<CultureInfo, Dictionary<string, string>> DebugCultureKeyLocalizedTextMap {
+			get { return cultureKeyLocalizedTextMap_; }
+		}
+
 		public LocalizationTable(string tableKey, Dictionary<CultureInfo, Dictionary<string, string>> cultureKeyLocalizedTextMap) {
 			tableKey_ = tableKey;
 			cultureKeyLocalizedTextMap_ = cultureKeyLocalizedTextMap;
