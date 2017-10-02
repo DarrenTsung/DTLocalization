@@ -21,22 +21,15 @@ namespace DTLocalization {
 		}
 
 		// NOTE (darren): call this from your build script / CI environment
-		public static void SaveTablesToCache() {
+		#if DT_COMMAND_PALETTE
+		[DTCommandPalette.MethodCommand]
+		#endif
+		public static void CacheLocalizationTables() {
 			foreach (var configuration in UnityEngine.Object.FindObjectsOfType<LocalizationConfiguration>()) {
 				foreach (var tableSource in configuration.TableSources) {
 					var localizationTable = tableSource.LoadTable();
 					SaveCached(localizationTable);
 				}
-			}
-		}
-
-		public static void ClearCachedTablesFromLocalBuild() {
-			string offlineCachePath = OfflineCachePath_;
-			Directory.Delete(offlineCachePath, recursive: true);
-
-			string offlineCachePathMeta = offlineCachePath + ".meta";
-			if (File.Exists(offlineCachePathMeta)) {
-				File.Delete(offlineCachePathMeta);
 			}
 		}
 
@@ -54,10 +47,6 @@ namespace DTLocalization {
 				Directory.CreateDirectory(offlineCachePath);
 
 				string filePath = Path.Combine(offlineCachePath, string.Format("{0}.txt", localizationTable.TableKey));
-				if (File.Exists(filePath)) {
-					Debug.LogWarning("Replacing cached localization table at: " + filePath + ", should not have previously built caches - possible overlap with table keys!");
-				}
-
 				File.WriteAllText(filePath, JsonUtility.ToJson(localizationTable));
 				AssetDatabase.SaveAssets();
 				AssetDatabase.Refresh();
