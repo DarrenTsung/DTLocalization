@@ -19,6 +19,6 @@ namespace DTLocalization {
 		// PRAGMA MARK - Internal
 		[Header("Outlets")]
 		[SerializeField]
-		private GDataLocalizationTableSource[] gdataTableSources_;
+		private GDatabaseSource[] gdataTableSources_;
 	}
 }

@@ -10,14 +10,34 @@ using DTLocalization.Internal;
 using GDataDB;
 
 namespace DTLocalization {
-	[CreateAssetMenu(fileName = "GDataLocalizationTableSource", menuName = "DTLocalization/GDataLocalizationTableSource")]
-	public class GDataLocalizationTableSource : ScriptableObject, ILocalizationTableSource {
+	[CreateAssetMenu(fileName = "GDatabaseSource", menuName = "DTLocalization/GDatabaseSource")]
+	public class GDatabaseSource : ScriptableObject, ILocalizationTableSource {
+		// PRAGMA MARK - Public Interface
+		public ITable<GLocalizationRowData> LoadLocalizationEntriesTable() {
+			try {
+				return LoadTableNamed<GLocalizationRowData>(localizationTableName_);
+			} catch (WebException e) {
+				Debug.LogWarning("Failed to load localization entries table through GDataDB! Exception: " + e);
+				return null;
+			}
+		}
+
+		public ITable<GLocalizationMasterRowData> LoadLocalizationMasterTable() {
+			try {
+				return LoadTableNamed<GLocalizationMasterRowData>(localizationMasterTableName_);
+			} catch (WebException e) {
+				Debug.LogWarning("Failed to load localization master table through GDataDB! Exception: " + e);
+				return null;
+			}
+		}
+
+
 		// PRAGMA MARK - ILocalizationTableSource Implementation
 		LocalizationTable ILocalizationTableSource.LoadTable() {
 			try {
 				var localizationTableData = new Dictionary<CultureInfo, Dictionary<string, string>>();
 
-				var localizationGTable = LoadLocalizationTable();
+				var localizationGTable = LoadLocalizationEntriesTable();
 				if (localizationGTable == null) {
 					return null;
 				}
@@ -51,11 +71,13 @@ namespace DTLocalization {
 		[SerializeField]
 		private string databaseName_;
 		[SerializeField]
+		private string localizationMasterTableName_;
+		[SerializeField]
 		private string localizationTableName_;
 
 		private byte[] PrivateKey_ { get { return privateKeyP12Asset_.bytes; } }
 
-		private ITable<GLocalizationRowData> LoadLocalizationTable() {
+		private ITable<T> LoadTableNamed<T>(string tableName) where T : new() {
 			IDatabaseClient client = new DatabaseClient(serviceAccountAddress_, PrivateKey_);
 			IDatabase database = client.GetDatabase(databaseName_);
 			if (database == null) {
@@ -63,9 +85,9 @@ namespace DTLocalization {
 				return null;
 			}
 
-			ITable<GLocalizationRowData> table = database.GetTable<GLocalizationRowData>(localizationTableName_);
+			ITable<T> table = database.GetTable<T>(tableName);
 			if (table == null) {
-				Debug.LogWarning("Couldn't find localization table (sheet) named: " + localizationTableName_ + " in the database named: " + databaseName_ + "!");
+				Debug.LogWarning("Couldn't find localization table (sheet) named: " + tableName + " in the database named: " + databaseName_ + "!");
 				return null;
 			}
 
