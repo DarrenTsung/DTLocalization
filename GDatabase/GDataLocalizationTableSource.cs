@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using UnityEngine;
 
 using DTLocalization.Internal;
@@ -13,20 +14,25 @@ namespace DTLocalization {
 	public class GDataLocalizationTableSource : ScriptableObject, ILocalizationTableSource {
 		// PRAGMA MARK - ILocalizationTableSource Implementation
 		LocalizationTable ILocalizationTableSource.LoadTable() {
-			var localizationTableData = new Dictionary<CultureInfo, Dictionary<string, string>>();
+			try {
+				var localizationTableData = new Dictionary<CultureInfo, Dictionary<string, string>>();
 
-			var localizationGTable = LoadLocalizationTable();
-			if (localizationGTable == null) {
+				var localizationGTable = LoadLocalizationTable();
+				if (localizationGTable == null) {
+					return null;
+				}
+
+				foreach (var row in localizationGTable.FindAll()) {
+					GLocalizationRowData rowData = row.Element;
+					CultureInfo culture = Localization.GetCachedCultureFor(rowData.LanguageCode);
+					localizationTableData.GetAndCreateIfNotFound(culture)[rowData.Key] = rowData.LocalizedText;
+				}
+
+				return new LocalizationTable(localizationTableKey_, localizationTableData);
+			} catch (WebException e) {
+				Debug.LogWarning("Failed to download latest localization through GDataDB! Exception: " + e);
 				return null;
 			}
-
-			foreach (var row in localizationGTable.FindAll()) {
-				GLocalizationRowData rowData = row.Element;
-				CultureInfo culture = Localization.GetCachedCultureFor(rowData.LanguageCode);
-				localizationTableData.GetAndCreateIfNotFound(culture)[rowData.Key] = rowData.LocalizedText;
-			}
-
-			return new LocalizationTable(localizationTableKey_, localizationTableData);
 		}
 
 
