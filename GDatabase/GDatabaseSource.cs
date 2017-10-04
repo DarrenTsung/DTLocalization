@@ -62,10 +62,20 @@ namespace DTLocalization {
 		private string localizationTableKey_ = "shared";
 
 		[Header("OAuth2 Properties")]
+		#pragma warning disable 0414
 		[SerializeField]
 		private string serviceAccountAddress_ = "xxxx.gserviceaccount.com";
 		[SerializeField]
 		private TextAsset privateKeyP12Asset_;
+		#pragma warning restore 0414
+
+		#if UNITY_EDITOR
+		[Header("Editor OAuth2 Properties (write-access)")]
+		[SerializeField]
+		private string editorServiceAccountAddress_ = "xxxx.gserviceaccount.com";
+		[SerializeField]
+		private TextAsset editorPrivateKeyP12Asset_;
+		#endif
 
 		[Header("Database Properties")]
 		[SerializeField]
@@ -75,13 +85,23 @@ namespace DTLocalization {
 		[SerializeField]
 		private string localizationTableName_;
 
-		private byte[] PrivateKey_ { get { return privateKeyP12Asset_.bytes; } }
-
 		private ITable<T> LoadTableNamed<T>(string tableName) where T : new() {
-			IDatabaseClient client = new DatabaseClient(serviceAccountAddress_, PrivateKey_);
+			string serviceAccount;
+			byte[] privateKey;
+
+			#if UNITY_EDITOR
+			serviceAccount = editorServiceAccountAddress_;
+			privateKey = editorPrivateKeyP12Asset_.bytes;
+			#else
+			serviceAccount = serviceAccountAddress_;
+			privateKey = privateKeyP12Asset_.bytes;
+			#endif
+
+			IDatabaseClient client = new DatabaseClient(serviceAccount, privateKey);
+
 			IDatabase database = client.GetDatabase(databaseName_);
 			if (database == null) {
-				Debug.LogWarning("Couldn't find database named: " + databaseName_ + " shared with the service account: " + serviceAccountAddress_ + "!");
+				Debug.LogWarning("Couldn't find database named: " + databaseName_ + " shared with the service account: " + serviceAccount + "!");
 				return null;
 			}
 
