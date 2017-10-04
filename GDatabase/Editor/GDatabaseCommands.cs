@@ -25,8 +25,8 @@ namespace DTLocalization.CommandPaletteCommands {
 						return;
 					}
 
-					var matchingRows = localizationMasterTable.FindStructured(string.Format("Key={0}", localizationKey));
-					if (matchingRows.Count > 0) {
+					bool existingKey = localizationMasterTable.FindAll().Any(r => r.Element.Key == localizationKey);
+					if (existingKey) {
 						Debug.LogWarning("Found existing row for localization key: " + localizationKey + " cannot adding as new!");
 						return;
 					}
@@ -37,8 +37,8 @@ namespace DTLocalization.CommandPaletteCommands {
 
 					// NOTE (darren): we don't delete pre-existing entries in case of data loss
 					ITable<GLocalizationRowData> localizationEntryTable = currentDatabaseSource_.LoadLocalizationEntriesTable();
-					var entryRows = localizationEntryTable.FindStructured(string.Format("Key={0}", localizationKey));
-					if (entryRows.Count > 0) {
+					bool duplicateKey = localizationEntryTable.FindAll().Any(r => r.Element.Key == localizationKey);
+					if (duplicateKey) {
 						Debug.LogWarning("Found pre-existing rows for localization key: " + localizationKey + ", please verify that they are correct - will not be deleted!");
 					}
 				});
