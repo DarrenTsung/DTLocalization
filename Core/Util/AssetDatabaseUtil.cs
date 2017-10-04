@@ -64,6 +64,19 @@ namespace DTLocalization.Internal {
 			return (List<T>)cachedAssets_[type];
 		}
 
+		public static T GetSingleAssetOfType<T>() where T : UnityEngine.Object {
+			List<T> allAssets = AllAssetsOfType<T>();
+			if (allAssets.Count <= 0) {
+				Debug.LogWarning("GetSingleAssetOfType<" + typeof(T).Name + ">() found no assets!");
+				return null;
+			}
+
+			if (allAssets.Count > 1) {
+				Debug.LogWarning("GetSingleAssetOfType<" + typeof(T).Name + ">() found more than one asset!");
+			}
+			return allAssets[0];
+		}
+
 
 		private static Dictionary<Type, object> cachedAssets_ = new Dictionary<Type, object>();
 	}

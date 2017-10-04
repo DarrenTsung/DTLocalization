@@ -20,7 +20,7 @@ namespace DTLocalization.CommandPaletteCommands {
 		public static void AddNewLocalizationKey() {
 			CheckAndUpdateCurrentDatabaseSource(() => {
 				CommandPaletteArgumentWindow.Show("Set Localization Key", (localizationKey) => {
-					CultureInfo masterCulture = EditorLocalization.MasterCulture;
+					CultureInfo masterCulture = EditorLocalizationConfiguration.GetMasterCulture();
 					CommandPaletteArgumentWindow.Show(string.Format("Set {0} Text", masterCulture.EnglishName), (masterText) => {
 						ITable<GLocalizationMasterRowData> localizationMasterTable = currentDatabaseSource_.LoadLocalizationMasterTable();
 						if (localizationMasterTable == null) {
@@ -53,7 +53,7 @@ namespace DTLocalization.CommandPaletteCommands {
 							Debug.LogWarning("Found pre-existing rows for localization key: " + localizationKey + ", please verify that they are correct - will not be deleted!");
 						}
 
-						foreach (var supportedCulture in EditorLocalization.SupportedCultures) {
+						foreach (var supportedCulture in EditorLocalizationConfiguration.GetSupportedCultures()) {
 							bool isMasterText = supportedCulture.Equals(masterCulture);
 							string translatedText;
 							if (isMasterText) {
