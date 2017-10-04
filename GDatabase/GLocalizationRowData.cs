@@ -20,5 +20,20 @@ namespace DTLocalization.Internal {
 		public string LocalizedText {
 			get; set;
 		}
+
+		// TRUE or FALSE
+		public string NeedsUpdating {
+			get; set;
+		}
+	}
+
+	public static class GLocalizationRowDataExtensions {
+		public static bool GetNeedsUpdating(this GLocalizationRowData data) {
+			return data.NeedsUpdating == "TRUE";
+		}
+
+		public static void SetNeedsUpdating(this GLocalizationRowData data, bool needsUpdating) {
+			data.NeedsUpdating = needsUpdating ? "TRUE" : "FALSE";
+		}
 	}
 }
