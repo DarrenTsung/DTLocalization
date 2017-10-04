@@ -30,7 +30,8 @@ namespace DTLocalization {
 				string tableKey = kvp.Key;
 				LocalizationTable table = kvp.Value;
 
-				inspector.RegisterHeader(tableKey);
+				bool fromCached = cachedTableKeys_.Contains(tableKey);
+				inspector.RegisterHeader(string.Format("{0}{1}", tableKey, fromCached ? " (cached)" : ""));
 
 				foreach (var kvp2 in table.DebugCultureKeyLocalizedTextMap) {
 					CultureInfo culture = kvp2.Key;
