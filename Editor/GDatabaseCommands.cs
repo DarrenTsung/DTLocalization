@@ -74,6 +74,19 @@ namespace DTLocalization.CommandPaletteCommands {
 			});
 		}
 
+		[MethodCommand]
+		public static void SetCurrentLocalizationCulture() {
+			var commandManager = new CommandManager();
+			foreach (var supportedCulture in EditorLocalizationConfiguration.GetSupportedCultures()) {
+				var chosenCulture = supportedCulture;
+				commandManager.AddCommand(new GenericCommand(supportedCulture.DisplayName, () => {
+					Localization.SetCurrentCulture(chosenCulture);
+				}));
+			}
+
+			CommandPaletteWindow.InitializeWindow("Select Current Culture", commandManager, clearInput: true);
+		}
+
 
 
 		// PRAGMA MARK - Internal

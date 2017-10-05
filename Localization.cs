@@ -68,7 +68,7 @@ namespace DTLocalization {
 
 		private static readonly HashSet<string> cachedTableKeys_ = new HashSet<string>();
 
-		private static CultureInfo currentCulture_ = new CultureInfo("EN");
+		private static CultureInfo currentCulture_ = new CultureInfo("en-US");
 
 		[RuntimeInitializeOnLoadMethod]
 		private static void InitializeLocalization() {
