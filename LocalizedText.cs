@@ -33,7 +33,6 @@ namespace DTLocalization {
 
 		private void RefreshLocalizedText() {
 			string localizedText = Localization.Get(key_);
-			Debug.Log("localizedText: " + localizedText);
 			SetText(localizedText);
 		}
 

@@ -75,7 +75,7 @@ namespace DTLocalization.CommandPaletteCommands {
 		}
 
 		[MethodCommand]
-		public static void SetCurrentLocalizationCulture() {
+		public static void SetCurrentLocalizationLanguage() {
 			var commandManager = new CommandManager();
 			foreach (var supportedCulture in EditorLocalizationConfiguration.GetSupportedCultures()) {
 				var chosenCulture = supportedCulture;
@@ -84,9 +84,8 @@ namespace DTLocalization.CommandPaletteCommands {
 				}));
 			}
 
-			CommandPaletteWindow.InitializeWindow("Select Current Culture", commandManager, clearInput: true);
+			CommandPaletteWindow.InitializeWindow("Select Current Language", commandManager, clearInput: true);
 		}
-
 
 
 		// PRAGMA MARK - Internal

@@ -33,9 +33,8 @@ namespace DTLocalization {
 				bool fromCached = cachedTableKeys_.Contains(tableKey);
 				inspector.RegisterHeader(string.Format("{0}{1}", tableKey, fromCached ? " (cached)" : ""));
 
-				foreach (var kvp2 in table.DebugCultureKeyLocalizedTextMap) {
-					CultureInfo culture = kvp2.Key;
-					Dictionary<string, string> keyLocalizedTextMap = kvp2.Value;
+				foreach (var culture in table.AllCultures) {
+					Dictionary<string, string> keyLocalizedTextMap = table.GetTextMapFor(culture);
 					foreach (var kvp3 in keyLocalizedTextMap) {
 						string key = kvp3.Key;
 						string localizedText = kvp3.Value;
