@@ -4,10 +4,10 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-using DT;
+using DTLocalization;
 
-namespace DTLocalization {
-	public static class TextOutletExtensions {
+namespace DT {
+	public static class TextOutletLocalizationExtensions {
 		public static void SetLocalizedKey(this TextOutlet textOutlet, string key) {
 			if (textOutlet.GameObject == null) {
 				Debug.LogWarning("SetLocalizedKey on invalid text outlet with no GameObject!");
