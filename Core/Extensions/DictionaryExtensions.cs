@@ -7,6 +7,11 @@ using UnityEngine;
 namespace DTLocalization.Internal {
 	public static class DictionaryExtensions {
 		public static V SafeGet<U, V>(this IDictionary<U, V> source, U key, V defaultValue = default(V)) {
+			if (key == null) {
+				Debug.LogWarning("Key is null - not good!");
+				return defaultValue;
+			}
+
 			if (source.ContainsKey(key)) {
 				return source[key];
 			} else {
