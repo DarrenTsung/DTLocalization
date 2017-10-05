@@ -76,6 +76,11 @@ namespace DTLocalization {
 
 		[RuntimeInitializeOnLoadMethod]
 		private static void InitializeLocalization() {
+			#if UNITY_EDITOR
+			// Save bundles when running in editor because why not? :D Saves effort.
+			LocalizationOfflineCache.CacheBundledLocalizationTables();
+			#endif
+
 			foreach (var localizationTable in LocalizationOfflineCache.LoadAllBundled()) {
 				LoadCachedTable(localizationTable);
 			}
