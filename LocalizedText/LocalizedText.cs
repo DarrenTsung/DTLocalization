@@ -20,7 +20,7 @@ namespace DTLocalization {
 		// PRAGMA MARK - Internal
 		[Header("Properties")]
 		[SerializeField]
-		private string key_;
+		private string key_ = null;
 
 		private void OnEnable() {
 			RefreshLocalizedText();
@@ -32,6 +32,10 @@ namespace DTLocalization {
 		}
 
 		private void RefreshLocalizedText() {
+			if (string.IsNullOrEmpty(key_)) {
+				return;
+			}
+
 			string localizedText = Localization.Get(key_);
 			SetText(localizedText);
 		}
