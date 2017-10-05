@@ -9,6 +9,7 @@ using GDataDB;
 
 namespace DTLocalization.Internal {
 	public interface ILocalizationTableSource {
+		string TableKey { get; }
 		LocalizationTable LoadTable();
 	}
 }

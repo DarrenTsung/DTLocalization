@@ -31,12 +31,12 @@ namespace DTLocalization {
 			}
 		}
 
+
+		// PRAGMA MARK - ILocalizationTableSource Implementation
 		public string TableKey {
 			get { return localizationTableKey_; }
 		}
 
-
-		// PRAGMA MARK - ILocalizationTableSource Implementation
 		LocalizationTable ILocalizationTableSource.LoadTable() {
 			try {
 				var localizationTableData = new Dictionary<CultureInfo, Dictionary<string, string>>();

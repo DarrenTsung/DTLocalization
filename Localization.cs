@@ -56,6 +56,9 @@ namespace DTLocalization {
 
 
 		// PRAGMA MARK - Internal
+		// Expire cached downloaded bundles
+		private const int kExpireCachedDownloadedDays = 1;
+
 		private static readonly Dictionary<string, LocalizationTable> localizationTableMap_ = new Dictionary<string, LocalizationTable>();
 		private static readonly Dictionary<string, CultureInfo> cultureMap_ = new Dictionary<string, CultureInfo>();
 
@@ -65,22 +68,59 @@ namespace DTLocalization {
 
 		[RuntimeInitializeOnLoadMethod]
 		private static void InitializeLocalization() {
-			foreach (var localizationTable in LocalizationOfflineCache.LoadAllCached()) {
-				LoadTable(localizationTable);
-				cachedTableKeys_.Add(localizationTable.TableKey);
+			foreach (var localizationTable in LocalizationOfflineCache.LoadAllBundled()) {
+				LoadCachedTable(localizationTable);
 			}
 
+			Dictionary<string, ILocalizationTableSource> localizationTableSources = new Dictionary<string, ILocalizationTableSource>();
 			foreach (var localizationConfiguration in UnityEngine.Object.FindObjectsOfType<LocalizationConfiguration>()) {
 				foreach (var tableSource in localizationConfiguration.TableSources) {
-					var localizationTable = tableSource.LoadTable();
-					if (localizationTable == null) {
-						// LoadTable will log reason - we can ignore
-						continue;
-					}
-
-					LoadTable(localizationTable);
+					localizationTableSources[tableSource.TableKey] = tableSource;
 				}
 			}
+
+			HashSet<string> cachedDownloadTableKeys = new HashSet<string>();
+			foreach (var cachedLocalizationTable in LocalizationOfflineCache.LoadAllDownloaded()) {
+				// override bundled from cached downloaded
+				LoadCachedTable(cachedLocalizationTable.LocalizationTable);
+
+				cachedDownloadTableKeys.Add(cachedLocalizationTable.LocalizationTable.TableKey);
+
+				// if cached downloaded data is expired, request new localization table from source
+				TimeSpan timePassedSinceCached = DateTime.Now - cachedLocalizationTable.DateTime;
+				if (timePassedSinceCached.Days >= kExpireCachedDownloadedDays) {
+					DownloadTable(cachedLocalizationTable.LocalizationTable.TableKey, localizationTableSources);
+				}
+			}
+
+			foreach (var tableKey in localizationTableSources.Keys) {
+				if (cachedDownloadTableKeys.Contains(tableKey)) {
+					continue;
+				}
+
+				DownloadTable(tableKey, localizationTableSources);
+			}
+		}
+
+		private static void DownloadTable(string tableKey, Dictionary<string, ILocalizationTableSource> localizationTableSources) {
+			var tableSource = localizationTableSources.GetRequiredValueOrDefault(tableKey);
+			if (tableSource == null) {
+				return;
+			}
+
+			var localizationTable = tableSource.LoadTable();
+			if (localizationTable == null) {
+				// Possible network error - we can ignore since LoadTable will log
+				return;
+			}
+
+			LocalizationOfflineCache.CacheDownloadedTable(localizationTable);
+			LoadTable(localizationTable);
+		}
+
+		private static void LoadCachedTable(LocalizationTable localizationTable) {
+			LoadTable(localizationTable);
+			cachedTableKeys_.Add(localizationTable.TableKey);
 		}
 
 		private static void LoadTable(LocalizationTable localizationTable) {
