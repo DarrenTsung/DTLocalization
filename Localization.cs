@@ -27,6 +27,10 @@ namespace DTLocalization {
 			return cultureMap_.GetOrCreateCached(cultureString, s => new CultureInfo(s));
 		}
 
+		public static IList<CultureInfo> GetAllCultures() {
+			return cultureMap_.Values.ToHashSet().ToArray();
+		}
+
 		public static string Get(string key, string localizationTableKey = null) {
 			IEnumerable<LocalizationTable> localizationTables = localizationTableMap_.Values;
 			if (localizationTableKey != null) {

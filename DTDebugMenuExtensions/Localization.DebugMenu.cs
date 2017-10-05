@@ -26,22 +26,16 @@ namespace DTLocalization {
 			var inspector = DTDebugMenu.GenericInspectorRegistry.Get("Localization");
 			inspector.ResetFields();
 
+			inspector.RegisterHeader("Debug Tools:");
+			inspector.RegisterToggle("Auto-Switch Languages", () => LocalizationAutoSwitch.Enabled, (b) => LocalizationAutoSwitch.Enabled = b);
+
+			inspector.RegisterHeader("Localization Tables:");
 			foreach (var kvp in localizationTableMap_) {
 				string tableKey = kvp.Key;
 				LocalizationTable table = kvp.Value;
 
 				bool fromCached = cachedTableKeys_.Contains(tableKey);
-				inspector.RegisterHeader(string.Format("{0}{1}", tableKey, fromCached ? " (cached)" : ""));
-
-				foreach (var culture in table.AllCultures) {
-					Dictionary<string, string> keyLocalizedTextMap = table.GetTextMapFor(culture);
-					foreach (var kvp3 in keyLocalizedTextMap) {
-						string key = kvp3.Key;
-						string localizedText = kvp3.Value;
-
-						inspector.RegisterLabel(string.Format("{1} - {0}: {2}", culture.Name, key, localizedText));
-					}
-				}
+				inspector.RegisterLabel(string.Format("{0}{1}", tableKey, fromCached ? " (cached)" : ""));
 			}
 		}
 		#endif
