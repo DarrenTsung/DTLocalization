@@ -22,8 +22,9 @@ namespace DTLocalization {
 		private Action<string> setTextCallback_;
 
 		protected override void SetText(string text) {
-			if (setTextCallback_ != null) {
+			if (setTextCallback_ == null) {
 				Debug.LogWarning("setTextCallback_ is missing - call Init on RuntimeLocalizedText!");
+				return;
 			}
 
 			setTextCallback_.Invoke(text);
