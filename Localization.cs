@@ -129,11 +129,15 @@ namespace DTLocalization {
 			bool cacheOverridden = cachedTableKeys_.Contains(tableKey);
 			cachedTableKeys_.Remove(tableKey);
 
-			if (localizationTableMap_.ContainsKey(tableKey) && !cacheOverridden) {
-				Debug.LogWarning("LoadTable - overriding non-cached table key: " + tableKey + " table key conflict!");
-			}
+			if (localizationTableMap_.ContainsKey(tableKey)) {
+				if (!cacheOverridden) {
+					Debug.LogWarning("LoadTable - merging non-cached table key: " + tableKey + " should not have multiples of the same table key!");
+				}
 
-			localizationTableMap_[tableKey] = localizationTable;
+				localizationTableMap_[tableKey].MergeUpdates(localizationTable);
+			} else {
+				localizationTableMap_[tableKey] = localizationTable;
+			}
 			OnLocalizationsUpdated.Invoke();
 		}
 	}

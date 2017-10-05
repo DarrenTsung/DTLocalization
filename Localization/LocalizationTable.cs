@@ -32,6 +32,34 @@ namespace DTLocalization.Internal {
 			return keyLocalizedTextMap.GetValueOrDefault(key);
 		}
 
+		// NOTE (darren): Merge updates from more recent tables without losing data
+		// For example bundled localization has key BUTTON_TARGET_PHRASE, but downloaded does not
+		// Merge the downloaded on top of the bundled and keep BUTTON_TARGET_PHRASE
+		// but update the localized text for the keys that downloaded has
+		//
+		// Basically prevent data loss if it was included in some earlier version of LocalizationTable (bundled)
+		public void MergeUpdates(LocalizationTable updatedLocalizationTable) {
+			if (!updatedLocalizationTable.TableKey.Equals(TableKey)) {
+				Debug.LogWarning("Attempting to merge updates for a localization table that does not match table key! Ignoring.");
+				return;
+			}
+
+			foreach (var kvp in updatedLocalizationTable.cultureKeyLocalizedTextMap_) {
+				var cultureInfo = kvp.Key;
+				var updatedTextMap = kvp.Value;
+
+				if (!cultureKeyLocalizedTextMap_.ContainsKey(cultureInfo)) {
+					cultureKeyLocalizedTextMap_[cultureInfo] = updatedTextMap;
+				} else {
+					var textMap = cultureKeyLocalizedTextMap_[cultureInfo];
+					foreach (string key in updatedTextMap.Keys) {
+						string updatedValue = updatedTextMap[key];
+						textMap[key] = updatedValue;
+					}
+				}
+			}
+		}
+
 
 		// PRAGMA MARK - ISerializationCallbackReceiver Implementation
 		void ISerializationCallbackReceiver.OnAfterDeserialize() {
