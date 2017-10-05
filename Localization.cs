@@ -30,7 +30,11 @@ namespace DTLocalization {
 		public static string Get(string key, string localizationTableKey = null) {
 			IEnumerable<LocalizationTable> localizationTables = localizationTableMap_.Values;
 			if (localizationTableKey != null) {
-				localizationTables = localizationTableMap_.GetRequiredValueOrDefault(localizationTableKey).Yield();
+				if (!localizationTableMap_.ContainsKey(localizationTableKey)) {
+					Debug.LogWarning("Get called with invalid localization table key: " + localizationTableKey);
+				} else {
+					localizationTables = localizationTableMap_[localizationTableKey].Yield();
+				}
 			}
 
 			string localizedText = null;
