@@ -99,11 +99,17 @@ namespace DTLocalization.CommandPaletteCommands {
 				return;
 			}
 
-			// TODO (darren): implement selection between multiple table sources
-			Debug.LogWarning("Choosing between multiple table sources not supported yet - selecting first found!");
-			currentDatabaseSource_ = allTableSources[0];
-			callback.Invoke();
-			return;
+			// choose between database sources
+			var commandManager = new CommandManager();
+			foreach (var databaseSource in allTableSources) {
+				var chosenDatabaseSource = databaseSource;
+				commandManager.AddCommand(new GenericCommand(databaseSource.TableKey, () => {
+					currentDatabaseSource_ = chosenDatabaseSource;
+					callback.Invoke();
+				}));
+			}
+
+			CommandPaletteWindow.InitializeWindow("Select Database To Use", commandManager, clearInput: true);
 		}
 	}
 }

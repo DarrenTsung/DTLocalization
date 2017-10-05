@@ -31,6 +31,10 @@ namespace DTLocalization {
 			}
 		}
 
+		public string TableKey {
+			get { return localizationTableKey_; }
+		}
+
 
 		// PRAGMA MARK - ILocalizationTableSource Implementation
 		LocalizationTable ILocalizationTableSource.LoadTable() {
