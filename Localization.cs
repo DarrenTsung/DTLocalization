@@ -18,6 +18,10 @@ namespace DTLocalization {
 			get { return currentCulture_; }
 		}
 
+		public static IList<CultureInfo> AllCultures {
+			get { return allCultures_; }
+		}
+
 		public static void SetCurrentCulture(CultureInfo culture) {
 			currentCulture_ = culture;
 			OnCultureChanged.Invoke();
@@ -25,10 +29,6 @@ namespace DTLocalization {
 
 		public static CultureInfo GetCachedCultureFor(string cultureString) {
 			return cultureMap_.GetOrCreateCached(cultureString, s => new CultureInfo(s));
-		}
-
-		public static IList<CultureInfo> GetAllCultures() {
-			return cultureMap_.Values.ToHashSet().ToArray();
 		}
 
 		public static string Get(string key, string localizationTableKey = null) {
@@ -69,6 +69,7 @@ namespace DTLocalization {
 
 		private static readonly Dictionary<string, LocalizationTable> localizationTableMap_ = new Dictionary<string, LocalizationTable>();
 		private static readonly Dictionary<string, CultureInfo> cultureMap_ = new Dictionary<string, CultureInfo>();
+		private static List<CultureInfo> allCultures_;
 
 		private static readonly HashSet<string> cachedTableKeys_ = new HashSet<string>();
 
@@ -113,6 +114,9 @@ namespace DTLocalization {
 
 				DownloadTable(tableKey, localizationTableSources);
 			}
+
+			allCultures_ = cultureMap_.Values.ToHashSet().ToList();
+			allCultures_.Sort((a, b) => a.DisplayName.CompareTo(b.DisplayName));
 		}
 
 		private static void DownloadTable(string tableKey, Dictionary<string, ILocalizationTableSource> localizationTableSources) {

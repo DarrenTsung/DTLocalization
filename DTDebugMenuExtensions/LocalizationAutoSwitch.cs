@@ -54,7 +54,7 @@ namespace DTLocalization.Internal {
 		private static IEnumerator AutoSwitchCoroutine() {
 			var waitForSeconds = new WaitForSeconds(0.2f);
 
-			var allCultures = Localization.GetAllCultures();
+			var allCultures = Localization.AllCultures;
 			int index = 0;
 			while (true) {
 				Localization.SetCurrentCulture(allCultures[index]);
