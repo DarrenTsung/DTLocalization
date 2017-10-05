@@ -68,10 +68,10 @@ namespace DTLocalization {
 		}
 
 		// NOTE (darren): call this from your build script / CI environment
+		#if UNITY_EDITOR
 		#if DT_COMMAND_PALETTE
 		[DTCommandPalette.MethodCommand]
 		#endif
-		#if UNITY_EDITOR
 		public static void CacheBundledLocalizationTables() {
 			foreach (var configuration in UnityEngine.Object.FindObjectsOfType<LocalizationConfiguration>()) {
 				foreach (var tableSource in configuration.TableSources) {
