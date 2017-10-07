@@ -50,6 +50,8 @@ namespace DTLocalization {
 		[DTValidator.Optional]
 		#endif
 		private TMP_Text tmpText_;
+
+		private Text downgradedText_;
 		#endif
 
 		private void OnEnable() {
@@ -73,7 +75,56 @@ namespace DTLocalization {
 		private void SetText(string text) {
 			#if TMPRO
 			if (tmpText_ != null) {
+				tmpText_.enabled = true;
 				tmpText_.text = text;
+				if (downgradedText_ != null) {
+					downgradedText_.enabled = false;
+				}
+
+				#if UNITY_EDITOR
+				if (tmpText_.transform.childCount > ((downgradedText_ != null) ? 1 : 0)) {
+					Debug.LogWarning("TMP_Text has children - downgrading will cause unwanted side-effects! Suggest that you design the UI in a different way!");
+				}
+				#endif
+
+				// if TMP_Text can't render the text correctly, we must
+				// downgrade it to regular Unity font (dynamic rendering)
+				if (!TMP_FontAssetUtil.DoesFontContainAllCharacters(tmpText_.font, text)) {
+					tmpText_.enabled = false;
+					if (downgradedText_ == null) {
+						var downgradedTextObj = new GameObject("DowngradedText");
+						downgradedTextObj.transform.SetParent(tmpText_.transform, worldPositionStays: false);
+
+						var downgradedRectTransform = downgradedTextObj.AddComponent<RectTransform>();
+						downgradedRectTransform.anchorMin = Vector2.zero;
+						downgradedRectTransform.anchorMax = Vector2.one;
+
+						downgradedRectTransform.offsetMax = Vector2.zero;
+						downgradedRectTransform.offsetMin = Vector2.zero;
+
+						downgradedText_ = downgradedTextObj.AddComponent<Text>();
+						downgradedText_.font = LocalizationConfiguration.DowngradedFont;
+						tmpText_.CopyPropertiesTo(downgradedText_);
+
+						var contentSizeFitter = tmpText_.GetComponent<ContentSizeFitter>();
+						if (contentSizeFitter != null) {
+							HorizontalOrVerticalLayoutGroup layoutGroup = tmpText_.gameObject.AddComponent<HorizontalLayoutGroup>();
+							layoutGroup.childControlHeight = true;
+							layoutGroup.childControlWidth = true;
+							layoutGroup.childForceExpandHeight = true;
+							layoutGroup.childForceExpandWidth = true;
+
+							var downgradedContentSizeFitter = downgradedText_.gameObject.AddComponent<ContentSizeFitter>();
+							downgradedContentSizeFitter.horizontalFit = contentSizeFitter.horizontalFit;
+							downgradedContentSizeFitter.verticalFit = contentSizeFitter.verticalFit;
+						}
+					}
+
+					downgradedText_.text = text;
+					downgradedText_.enabled = true;
+				}
+
+				return;
 			}
 			#endif
 
