@@ -14,8 +14,13 @@ namespace DT {
 				return;
 			}
 
-			var runtimeLocalizedText = textOutlet.GameObject.GetOrAddComponent<RuntimeLocalizedText>();
-			runtimeLocalizedText.Init(key, textOutlet.SetText);
+			var localizedText = textOutlet.GameObject.GetOrAddComponent<LocalizedText>();
+			localizedText.SetUnityText(textOutlet.UnityText);
+			#if TMPRO
+			localizedText.SetTMProText(textOutlet.TMPText);
+			#endif
+
+			localizedText.SetKey(key);
 		}
 	}
 }
