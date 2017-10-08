@@ -87,6 +87,30 @@ namespace DTLocalization.CommandPaletteCommands {
 			CommandPaletteWindow.InitializeWindow("Select Current Language", commandManager, clearInput: true);
 		}
 
+		[MethodCommand]
+		public static void SearchLocalizationKeys() {
+			var commandManager = new CommandManager();
+			foreach (var localizationTable in LocalizationOfflineCache.LoadAllBundled()) {
+				Dictionary<string, string> textMap = localizationTable.GetTextMapFor(EditorLocalizationConfiguration.GetMasterCulture());
+				if (textMap == null) {
+					Debug.LogWarning("Failed to get TextMap for MasterCulture: " + EditorLocalizationConfiguration.GetMasterCulture().DisplayName);
+					return;
+				}
+
+				foreach (var kvp in textMap) {
+					string key = kvp.Key;
+					string localizedText = kvp.Value;
+
+					commandManager.AddCommand(new GenericCommand(localizedText, () => {
+						Debug.Log(string.Format("Copied '{0}' into the clipboard!", key));
+						EditorGUIUtility.systemCopyBuffer = key;
+					}, detailText: key));
+				}
+			}
+
+			CommandPaletteWindow.InitializeWindow("Localization Keys..", commandManager, clearInput: true);
+		}
+
 
 		// PRAGMA MARK - Internal
 		private static GDatabaseSource currentDatabaseSource_;
