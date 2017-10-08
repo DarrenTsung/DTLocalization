@@ -35,7 +35,7 @@ namespace DTLocalization {
 		// PRAGMA MARK - Internal
 		[Header("Properties")]
 		[SerializeField]
-		private string serializedMasterCulture_;
+		private string serializedMasterCulture_ = "en-US";
 		[SerializeField]
 		private string[] serializedSupportedCultures_;
 

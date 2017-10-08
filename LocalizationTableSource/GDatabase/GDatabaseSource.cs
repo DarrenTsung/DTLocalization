@@ -83,11 +83,11 @@ namespace DTLocalization {
 
 		[Header("Database Properties")]
 		[SerializeField]
-		private string databaseName_;
+		private string databaseName_ = "Localization Database";
 		[SerializeField]
-		private string localizationMasterTableName_;
+		private string localizationMasterTableName_ = "Localization Master";
 		[SerializeField]
-		private string localizationTableName_;
+		private string localizationTableName_ = "Localization";
 
 		private ITable<T> LoadTableNamed<T>(string tableName) where T : new() {
 			string serviceAccount;

@@ -35,6 +35,18 @@ namespace DTLocalization.Internal {
 			}
 		}
 
+		#if DT_COMMAND_PALETTE
+		[DTCommandPalette.MethodCommand]
+		private static void EnableLocalizationAutoSwitch() {
+			Enabled = true;
+		}
+
+		[DTCommandPalette.MethodCommand]
+		private static void DisableLocalizationAutoSwitch() {
+			Enabled = false;
+		}
+		#endif
+
 
 		// PRAGMA MARK - Internal
 		private static Coroutine autoSwitchCoroutine_;

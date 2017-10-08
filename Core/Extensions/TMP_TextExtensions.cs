@@ -17,6 +17,18 @@ namespace DTLocalization.Internal {
 		public static void CopyPropertiesTo(this TMP_Text tmpText, Text unityText) {
 			unityText.fontSize = (int)tmpText.fontSize;
 			unityText.alignment = Convert(tmpText.alignment);
+
+			switch (tmpText.overflowMode) {
+				case TextOverflowModes.Overflow:
+					unityText.verticalOverflow = VerticalWrapMode.Overflow;
+					break;
+				case TextOverflowModes.Truncate:
+					unityText.verticalOverflow = VerticalWrapMode.Truncate;
+					break;
+				default:
+					Debug.LogWarning("Unhandled overflow mode for TMP_Text: " + tmpText.overflowMode);
+					break;
+			}
 		}
 
 

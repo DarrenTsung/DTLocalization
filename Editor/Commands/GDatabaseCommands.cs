@@ -74,6 +74,9 @@ namespace DTLocalization.CommandPaletteCommands {
 							entryRowData.SetNeedsUpdating(!isMasterText);
 							localizationEntryTable.Add(entryRowData);
 						}
+
+						// Cache bundled localization tables after new row
+						LocalizationOfflineCache.CacheBundledLocalizationTables();
 					});
 				});
 			});
