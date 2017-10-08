@@ -81,12 +81,6 @@ namespace DTLocalization {
 					downgradedText_.enabled = false;
 				}
 
-				#if UNITY_EDITOR
-				if (tmpText_.transform.childCount > ((downgradedText_ != null) ? 1 : 0)) {
-					Debug.LogWarning("TMP_Text has children - downgrading will cause unwanted side-effects! Suggest that you design the UI in a different way!");
-				}
-				#endif
-
 				// if TMP_Text can't render the text correctly, we must
 				// downgrade it to regular Unity font (dynamic rendering)
 				if (!TMP_FontAssetUtil.DoesFontContainAllCharacters(tmpText_.font, text)) {
