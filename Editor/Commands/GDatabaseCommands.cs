@@ -18,6 +18,11 @@ namespace DTLocalization.CommandPaletteCommands {
 		// PRAGMA MARK - Public Interface
 		[MethodCommand]
 		public static void AddNewLocalizationKey() {
+			if (Application.internetReachability == NetworkReachability.NotReachable) {
+				Debug.LogWarning("No internet connection - cannot add new localization key!");
+				return;
+			}
+
 			CheckAndUpdateCurrentDatabaseSource(() => {
 				CommandPaletteArgumentWindow.Show("Set Localization Key", (localizationKey) => {
 					CultureInfo masterCulture = EditorLocalizationConfiguration.GetMasterCulture();
