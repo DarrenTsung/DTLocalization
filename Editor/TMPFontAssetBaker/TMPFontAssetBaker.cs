@@ -120,8 +120,6 @@ namespace DTLocalization.Internal {
 
 			// NEED TO GENERATE AN EVENT TO FORCE A REDRAW OF ANY TEXTMESHPRO INSTANCES THAT MIGHT BE USING THIS FONT ASSET
 			TMPro_EventManager.ON_FONT_PROPERTY_CHANGED(true, fontAsset);
-
-			Debug.Log("Font Baking finished!");
 		}
 
 		private static Texture2D CreateFontTexture(int atlasWidth, int altasHeight, byte[] textureBuffer, RenderModes fontRenderMode) {
