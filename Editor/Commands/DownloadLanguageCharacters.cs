@@ -1,4 +1,4 @@
-#if DT_COMMAND_PALETTE && UNITY_EDITOR
+#if TMPRO && UNITY_EDITOR
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,14 +12,15 @@ using UnityEngine;
 using DTLocalization.Internal;
 using GDataDB;
 
-using DTCommandPalette;
 using TMPro.EditorUtilities;
 
-namespace DTLocalization.CommandPaletteCommands {
-	public static class DownloadLanguageCharacters {
+namespace DTLocalization {
+	public static class TMPLocalization {
 		// PRAGMA MARK - Public Interface
-		[MethodCommand]
-		public static void DownloadAndBakeAllUsedLocalizationCharacters() {
+		#if DT_COMMAND_PALETTE
+		[DTCommandPalette.MethodCommand]
+		#endif
+		public static void DownloadAndBakeAllUsedLocalizationCharactersIntoFonts() {
 			var charSet = new HashSet<char>();
 
 			LocalizationTable[] allTables = UnityEngine.Object.FindObjectsOfType<LocalizationConfiguration>().SelectMany(config => config.TableSources).Select(s => s.LoadTable()).ToArray();
