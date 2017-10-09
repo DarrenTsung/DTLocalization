@@ -3,7 +3,8 @@
 Localization framework that comes with adaptor for GDatabase backend, bundled caching, runtime caching, and more.
 
 ![Cycling through Localized Languages](./Images/LocalizationGif.gif)
-(Cycling through some localized languages)
+
+(Cycling through some localized languages for [PHASERBEAK](www.phaserbeak.com))
 
 ## Features
 #### Caching
