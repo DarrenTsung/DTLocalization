@@ -77,6 +77,9 @@ namespace DTLocalization.CommandPaletteCommands {
 
 						// Cache bundled localization tables after new row
 						LocalizationOfflineCache.CacheBundledLocalizationTables();
+						// Rebake fonts after new translations
+						TMPLocalization.DownloadAndBakeAllUsedLocalizationCharactersIntoFonts();
+						Debug.Log("Finished adding new key: " + localizationKey + " to: " + currentDatabaseSource_.TableKey + "!");
 					});
 				});
 			});
