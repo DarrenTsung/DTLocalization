@@ -30,18 +30,20 @@ Currently DTLocalization supports storing localization data inside Google spread
 1. Download the DTLocalization project from this repository by pressing [this link](https://github.com/DarrenTsung/DTLocalization/archive/master.zip). It should automatically download the latest state of the master branch.
 2. Place the downloaded folder in your project. I recommend placing it in the Assets/Plugins directory so [it doesn’t add to your compile time](https://medium.com/@darrentsung/the-clocks-ticking-how-to-optimize-compile-time-in-unity-45d1f200572b). 
 
-#### Connecting Google Spreadsheet
+#### Creating Google Spreadsheet
 1. Follow the steps to setup a Google developer account and create a service account address and p12 key [here](https://github.com/DarrenTsung/GDataDB).
 2. Create a spreadsheet named 'Localization Database' in Google Drive with two sheets: we'll name them 'Localization' and 'Localization Master'.
 3. 'Localization' should have the columns 'Key | Language Code | LocalizedText | NeedsUpdating'. See example [here](TKlink).
 4. 'Localization Master' should have the columns 'Key | Context'. See example [here](TKlink).
 5. Share the spreadsheet with read-only access to the service account address (looks like xxxx.gserviceaccount.com).
 
-(Back in Unity)
-6. Create a GDatabaseSource asset in your project by right-clicking in the project window and going to Create -> DTLocalization -> GDatabaseSource.
-7. Setup your newly created GDatabaseSource with a table key, a unique key used to identify this localization table.
-8. Set the Service Account Address\_ under the OAuth2 properties to the service account with read-only access. Link the p12 file renamed with .bytes extension as the Private Key P12 Asset\_.
-9. Create another service account, this time set it up with edit access (read-write). Set this under the Editor Service Account Address_ so editor tools can write to the localization table.
+#### Connecting Spreadsheet In Unity
+1. (In Unity) Create a GDatabaseSource asset in your project by right-clicking in the project window and going to Create -> DTLocalization -> GDatabaseSource.
+2. Setup your newly created GDatabaseSource with a table key, a unique key used to identify this localization table.
+3. Set the Service Account Address\_ under the OAuth2 properties to the service account with read-only access. Link the p12 file renamed with .bytes extension as the Private Key P12 Asset\_.
+4. Create another service account, this time set it up with edit access (read-write). Set this under the Editor Service Account Address_ so editor tools can write to the localization table.
+
+![Example GDatabaseSource](./Images/GDatabaseSource.png)
 
 #### Setting Language Localization Preferences
 1. (In Unity) Create an EditorLocalizationConfiguration asset in your project by right-clicking, Create -> DTLocalization -> EditorLocalizationConfiguration.
@@ -49,9 +51,13 @@ Currently DTLocalization supports storing localization data inside Google spread
 3. Set which languages to localize to using the language codes from [this page](https://msdn.microsoft.com/en-us/library/ee825488%28v=cs.20%29.aspx).
 4. These values are just used for the editor tools and have no restriction on what types of languages can be localized in the database.
 
+![Example EditorLocalizationConfiguration](./Images/EditorLocalizationConfiguration.png)
+
 #### Setup Google Translate API (optional)
 1. (In Unity) Create an GoogleTranslateSource asset in your project by right-clicking, Create -> DTLocalization -> GoogleTranslateSource.
 2. Setup the Google Translate Source with a service account + enable Google Translate API access for your account.
+
+![Example GoogleTranslateSource](./Images/GoogleTranslateSource.png)
 
 #### Create First Localization Key
 1. [Add DTCommandPalette to your project](https://github.com/DarrenTsung/DTCommandPalette) (along with DT_COMMAND_PALETTE compile define) to access editor commands.
