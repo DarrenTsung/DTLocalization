@@ -18,7 +18,7 @@ Add Google service account credentials to your project and DTLocalization will a
 Placeholder translations are marked as needsUpdating in the localization table and can be sent to external translators for final translation.
 
 #### TextMeshPro Integration
-DTLocalization comes with support for TextMeshPro, including a workflow for downloading all used characters to be built into the font atlas and also automatically downgrading the TextMeshPro text into Unity text if characters are missing from the atlas.
+DTLocalization comes with support for TextMeshPro, including an automated workflow for downloading all used characters to be built into the font atlas and also automatically downgrading the TextMeshPro text into Unity text if characters are missing from the atlas.
 
 #### Editor Workflow
 In combination with DTCommandPalette, DTLocalization comes with handy commands for searching through localization keys, adding new localization keys, and more. All these commands can be run right inside the Unity editor!
