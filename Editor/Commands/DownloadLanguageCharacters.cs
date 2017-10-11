@@ -42,6 +42,11 @@ namespace DTLocalization {
 			}
 
 			foreach (var config in bakedFontConfigurations) {
+				// No need to bake a font that already contains all the characters
+				if (TMP_FontAssetUtil.DoesFontContainAllCharacters(config.OutputFontAsset, charactersString)) {
+					continue;
+				}
+
 				string outputFilePath = AssetDatabase.GetAssetPath(config.OutputFontAsset);
 				TMPFontAssetBaker.Bake(config.Font, config.useAutoSizing, config.FontSize, config.CharacterPadding, config.FontPackingMode, config.AtlasWidth, config.AtlasHeight, config.FontStyle, config.FontStyleMod, config.FontRenderMode, charactersString, outputFilePath);
 			}
