@@ -1,4 +1,4 @@
-#if TMPRO && UNITY_EDITOR
+#if (TMPRO || TextMeshPro) && UNITY_EDITOR
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -86,10 +86,25 @@ namespace DTLocalization.Internal {
 			AssetDatabase.AddObjectToAsset(fontTexture, fontAsset);
 
 			// Find all Materials referencing this font atlas.
+			try 
+			{
+				// this can throw a nullref if the asset doesn't exist yet
+				materialReferences = TMP_EditorUtility.FindMaterialReferences(fontAsset).Where(m => m != null).ToArray();
+			}
+			catch(NullReferenceException exception)
+			{
+				materialReferences = null;
+				Debug.LogWarning("Exception caught: " + exception.Message);
+			}
+			
 			Material[] materialReferences = TMP_EditorUtility.FindMaterialReferences(fontAsset).Where(m => m != null).ToArray();
 			if (materialReferences == null || materialReferences.Length <= 0) {
 				// Create new Material and add it as Sub-Asset
 				Shader shader = Shader.Find("TMPro/Distance Field");
+				if(shader == null) 
+				{
+					Shader.Find("TextMeshPro/Distance Field"); // Update namespace for 2018
+				}
 				Material fontMaterial = new Material(shader);
 				fontMaterial.name = outputFilename + " Material";
 
