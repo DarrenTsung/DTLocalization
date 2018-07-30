@@ -86,6 +86,7 @@ namespace DTLocalization.Internal {
 			AssetDatabase.AddObjectToAsset(fontTexture, fontAsset);
 
 			// Find all Materials referencing this font atlas.
+			Material[] materialReferences= null;
 			try 
 			{
 				// this can throw a nullref if the asset doesn't exist yet
@@ -97,7 +98,6 @@ namespace DTLocalization.Internal {
 				Debug.LogWarning("Exception caught: " + exception.Message);
 			}
 			
-			Material[] materialReferences = TMP_EditorUtility.FindMaterialReferences(fontAsset).Where(m => m != null).ToArray();
 			if (materialReferences == null || materialReferences.Length <= 0) {
 				// Create new Material and add it as Sub-Asset
 				Shader shader = Shader.Find("TMPro/Distance Field");
