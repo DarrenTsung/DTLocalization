@@ -42,7 +42,7 @@ namespace DTLocalization.Internal {
 
 			byte[] textureBuffer = new byte[atlasWidth * atlasHeight];
 
-			int[] characterArray = charactersToBake.Select(c => (int)c).ToArray();
+			int[] characterArray = charactersToBake.Select(c => (int)c).Distinct().ToArray();
 			int characterCount = charactersToBake.Length;
 
 			var fontFaceInfo = new FT_FaceInfo();
